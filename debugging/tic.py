@@ -33,16 +33,13 @@ def check_winner(board):
 def get_input(player, coordinate):
     """
     Prompt the player for a row or column.
-    Allows quitting by typing 'q'.
-    Loops until a valid integer in 0-2 is entered or user quits.
+    Loops until a valid integer in 0-2 is entered.
 
     Returns:
-        int | None: The valid coordinate, or None if player chooses to quit.
+        int: The valid coordinate.
     """
     while True:
-        user_input = input(f"Enter {coordinate} (0-2) for player {player} (or 'q' to quit): ").strip().lower()
-        if user_input == 'q':
-            return None
+        user_input = input(f"Enter {coordinate} (0-2) for player {player}: ").strip()
         try:
             value = int(user_input)
             if 0 <= value <= 2:
@@ -50,7 +47,7 @@ def get_input(player, coordinate):
             else:
                 print("Invalid input. Must be 0, 1, or 2.")
         except ValueError:
-            print("Invalid input. Must be a number 0-2 or 'q' to quit.")
+            print("Invalid input. Must be a number between 0 and 2.")
 
 
 def tic_tac_toe():
@@ -69,15 +66,8 @@ def tic_tac_toe():
 
             # Get valid row
             row = get_input(player, "row")
-            if row is None:
-                print("Player chose to quit. Goodbye!")
-                break
-
             # Get valid column
             col = get_input(player, "column")
-            if col is None:
-                print("Player chose to quit. Goodbye!")
-                break
 
             # Check if spot is free
             if board[row][col] != " ":
