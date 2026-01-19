@@ -3,6 +3,7 @@ import random
 import os
 
 def clear_screen():
+    """Clear the terminal screen."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 class Minesweeper:
@@ -13,7 +14,7 @@ class Minesweeper:
         self.revealed = [[False for _ in range(width)] for _ in range(height)]
 
     def print_board(self, reveal=False):
-       
+        """Print the game board."""
         print('  ' + ' '.join(str(i) for i in range(self.width)))
         for y in range(self.height):
             print(y, end=' ')
@@ -29,6 +30,7 @@ class Minesweeper:
             print()
 
     def count_mines_nearby(self, x, y):
+        """Count mines in adjacent cells."""
         count = 0
         for dx in [-1, 0, 1]:
             for dy in [-1, 0, 1]:
@@ -39,6 +41,7 @@ class Minesweeper:
         return count
 
     def reveal(self, x, y):
+        """Reveal a cell; recursively reveal neighbors if zero nearby mines."""
         if self.revealed[y][x]:
             return True
 
@@ -57,6 +60,7 @@ class Minesweeper:
         return True
 
     def check_win(self):
+        """Check if all non-mine cells have been revealed."""
         revealed_cells = sum(
             self.revealed[y][x]
             for y in range(self.height)
@@ -65,21 +69,21 @@ class Minesweeper:
         return revealed_cells == (self.width * self.height - len(self.mines))
 
     def play(self):
-        while True:
-            self.print_board()
-            try:
-                user_input = input("Enter x y coordinates (or 'q' to quit): ").strip()
-
-                if user_input.lower() == 'q':
-                    print("👋 Game exited. Goodbye!")
-                    break
-
-                x_str, y_str = user_input.split()
-                x = int(x_str)
-                y = int(y_str)
+        """Main game loop with input validation and graceful exit."""
+        try:
+            while True:
+                self.print_board()
+                
+                # Wrap input parsing in a try/except for ValueError
+                try:
+                    x = int(input("Enter x coordinate: "))
+                    y = int(input("Enter y coordinate: "))
+                except ValueError:
+                    print("Invalid input. Please enter numbers only.")
+                    continue
 
                 if not (0 <= x < self.width and 0 <= y < self.height):
-                    print("Coordinates out of bounds.")
+                    print("Coordinates out of bounds. Try again.")
                     continue
 
                 if not self.reveal(x, y):
@@ -92,8 +96,9 @@ class Minesweeper:
                     print("🎉 Congratulations! You won!")
                     break
 
-            except ValueError:
-                print("Invalid input. Please enter two numbers or 'q'.")
+        except KeyboardInterrupt:
+            # Handle Ctrl+C gracefully
+            print("\n\n⛔ Game interrupted by user. Goodbye!")
 
 if __name__ == "__main__":
     game = Minesweeper()
